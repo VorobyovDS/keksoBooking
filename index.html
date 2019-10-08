@@ -13,11 +13,11 @@
 </header>
 
 <main>
-  <section class="map">
+  <section class="map js-map map--faded">
     <div class="map__pins">
       <div class="map__pinsoverlay"><h2>И снова Токио!</h2></div>
 
-      <button class="map__pin map__pin--main">
+      <button class="map__pin map__pin--main js-map__pin--main">
         <img src="img/main-pin-image.png" width="40" height="44" draggable="false">
         <svg viewBox="0 0 70 70">
           <defs>
@@ -59,7 +59,7 @@
           <option value="2">Два гостя</option>
         </select>
 
-        <fieldset id="housing-features" class="map__filter-set features">
+        <fieldset disabled id="housing-features" class="map__filter-set features">
           <input type="checkbox" name="features" value="wifi" id="filter-wifi">
           <label class="feature feature--wifi" for="filter-wifi">Wi-Fi</label>
 
@@ -85,8 +85,8 @@
   <div class="notice">
     <h2 class="notice__title">Ваше объявление</h2>
 
-    <form class="notice__form notice__form--disabled" method="post" enctype="multipart/form-data" autocomplete="off">
-      <fieldset class="notice__header">
+    <form class="notice__form js-notice__form notice__form--disabled" method="post" enctype="multipart/form-data" autocomplete="off">
+      <fieldset disabled class="notice__header">
         <legend>Ваша фотография (для карты)</legend>
         <div class="notice__photo">
           <div class="upload">
@@ -100,17 +100,17 @@
         </div>
       </fieldset>
 
-      <fieldset class="form__element form__element--wide">
+      <fieldset disabled class="form__element form__element--wide">
         <label for="title">Заголовок объявления</label>
         <input id="title" name="title" type="text" placeholder="Милая, уютная квартирка в центре Токио">
       </fieldset>
 
-      <fieldset class="form__element form__element--wide">
+      <fieldset disabled class="form__element form__element--wide">
         <label for="address">Адрес</label>
         <input id="address" name="address" type="text">
       </fieldset>
 
-      <fieldset class="form__element">
+      <fieldset disabled class="form__element">
         <label for="type">Тип жилья</label>
         <select id="type" name="type">
           <option value="flat" selected>Квартира</option>
@@ -120,12 +120,12 @@
         </select>
       </fieldset>
 
-      <fieldset class="form__element">
+      <fieldset disabled class="form__element">
         <label for="price">Цена за ночь, руб.</label>
         <input id="price" name="price" type="number" placeholder="5000">
       </fieldset>
 
-      <fieldset class="form__element">
+      <fieldset disabled class="form__element">
         <label for="timein">Время заезда и выезда</label>
         <select id="timein" name="timein">
           <option value="12:00" selected>После 12</option>
@@ -139,7 +139,7 @@
         </select>
       </fieldset>
 
-      <fieldset class="form__element">
+      <fieldset disabled class="form__element">
         <label for="room_number">Кол-во комнат</label>
         <select id="room_number" name="rooms">
           <option value="1" selected>1 комната</option>
@@ -149,7 +149,7 @@
         </select>
       </fieldset>
 
-      <fieldset class="form__element">
+      <fieldset disabled class="form__element">
         <label for="capacity">Количество мест</label>
         <select id="capacity" name="capacity">
           <option value="3" selected>для 3 гостей</option>
@@ -159,7 +159,7 @@
         </select>
       </fieldset>
 
-      <fieldset class="form__element features form__element--wide">
+      <fieldset disabled class="form__element features form__element--wide">
         <legend>Удобства: Wi-Fi, кухня, парковка, стиралка, лифт, кондиционер</legend>
 
         <input type="checkbox" name="features" value="wifi" id="feature-wifi">
@@ -181,12 +181,12 @@
         <label class="feature feature--conditioner" for="feature-conditioner">Кондиционер</label>
       </fieldset>
 
-      <fieldset class="form__element form__element--wide">
+      <fieldset disabled class="form__element form__element--wide">
         <label for="description">Описание (не обязательно)</label>
         <textarea id="description" name="description" placeholder="Здесь расскажите о том, какое ваше жилье замечательное и вообще"></textarea>
       </fieldset>
 
-      <fieldset class="form__element form__element--wide">
+      <fieldset disabled class="form__element form__element--wide">
         <label>Фотографии жилья</label>
         <div class="form__photo-container">
           <div class="upload">
@@ -196,7 +196,7 @@
         </div>
       </fieldset>
 
-      <fieldset class="form__element form__element--submit">
+      <fieldset disabled class="form__element form__element--submit">
         <button class="form__submit" type="submit">Опубликовать</button>
         или <button class="form__reset" type="reset">очистить</button>
       </fieldset>
@@ -219,9 +219,9 @@
 </footer>
 
 <template id="map_card_template">
-  <article class="map__card popup">
+  <article class="map__card js-map-card popup" style="display: none">
     <img src="img/avatars/user01.png" class="popup__avatar js-popup__avatar" width="70" height="70">
-    <button class="popup__close">Закрыть</button>
+    <button class="popup__close js-popup__close">Закрыть</button>
     <h3 class="popup__title js-popup__title">Уютное гнездышко для молодоженов</h3>
     <p class="popup__text--address js-popup__text--address"><small>102-0082 Tōkyō-to, Chiyoda-ku, Ichibanchō, 14−3</small></p>
     <p class="popup__price js-popup__text--price">5200&#x20bd;/ночь</p>
@@ -242,7 +242,7 @@
     </ul>
   </article>
 
-  <button style="left: 200px; top: 400px;" class="map__pin js-map__pin"><img class="js-pin_img_btn" src="img/avatars/user07.png" width="40" height="40" draggable="false"></button>
+  <button style="left: 200px; top: 400px; display: none;" class="map__pin js-map__pin"><img class="js-pin_img_btn" src="img/avatars/user07.png" width="40" height="40" draggable="false"></button>
 </template>
    <script src="js/map.js"></script>
 </body>
