@@ -97,7 +97,7 @@
             title: generateTitleKeks(ONE_MANE_KEKS, TWO_MANE_KEKS, FREE_NAME_KEKS), // заголовок
             address: ' ' + window.help.getRandomNumber(300, 900) + ' ' + window.help.getRandomNumber(130, 630), // адрес
             price: window.help.getRandomNumber(1000, 1000000) + ' ₽/ночь.', // стоимость проживания
-            type: getTypeTitile(window.help.generateArrayNumber(TYPE_KEKS)), //тип, ну тут надо ещё обдумать что имели ввиду
+            type: getTypeTitile(window.help.generateArrayNumber(TYPE_KEKS)),
             rooms: window.help.getRandomNumber(1, 5), // количество комнат
             guests: window.help.getRandomNumber(1, 100), // количество гостей
             checkin: window.help.generateArrayNumber(TIME_CHECK), // время заезда
@@ -108,7 +108,7 @@
           },
           location: {
             x: window.help.getRandomNumber(300, 900),
-            y: window.help.getRandomNumber(130, 630),
+            y: window.help.getRandomNumber(200, 630),
           }
         };
         dataArray.push(currentObject)

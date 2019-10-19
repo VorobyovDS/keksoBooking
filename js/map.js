@@ -8,6 +8,40 @@
 
   var mapInfo = window.data.getDateInfo(5);
 
+  /*
+  * функция в которую передаем значение координаты (указанную в объявлении) и её название x или y
+ */
+  var getCoordsRenderPin = function (value, xOry) {
+    var getPinElement = mapCardTemplate.querySelector('.js-map-card');
+    var positionStyleCoords = value;
+    console.log('start' + positionStyleCoords);
+
+    var WIDTH_PIN = 40; // ширина пина
+    var HEIGHT_PIN = 44; // высота пина
+    var HEIGHT_AFTER_PIN = 18; // высота псевдо элемента
+
+    /*
+    * вижу здесь пока несколько вариантов:
+    * - самый просто вариант, но не очень гибкий это просто задать константы и скорректировать отображение;
+    * - можно вставить дефолтный Pin в дерево, будет всегда скрыт и уже у него вычислить все необходимые значения;
+    * - можно ещё после рендеринга пробегаться по значениям и корректирвоать их, но это уже совсем плохой вариант;
+    * выбрал пока самый простой из них
+    * */
+    console.log('st' + positionStyleCoords);
+
+    if (xOry === 'x') {
+      positionStyleCoords = value + (WIDTH_PIN / 2);
+    }
+
+    if (xOry === 'y') {
+      positionStyleCoords = value - HEIGHT_PIN - HEIGHT_AFTER_PIN;
+    }
+    console.log(getPinElement.offsetWidth);
+    console.log('finish' + positionStyleCoords);
+
+    return positionStyleCoords;
+  };
+
   /* рендер карточек и меток */
   var renderCardMap = function (kard, dataId) {
     var template = mapCardTemplate.cloneNode(true);
@@ -29,8 +63,8 @@
     template.querySelector('.js-popup__text--capacity').textContent = kard.offer.rooms + ' комнаты для ' + kard.offer.guests + ' гостей';
     template.querySelector('.js-popup__text--time').textContent = 'заезд после ' + kard.offer.checkin + ' , выезд до ' + kard.offer.checkout;
     template.querySelector('.js-popup__description').textContent = kard.offer.title + ' ' + kard.offer.description;
-    pin.style.left = kard.location.x + 'px';
-    pin.style.top = kard.location.y + 'px';
+    pin.style.left = getCoordsRenderPin(kard.location.x, 'x') + 'px';
+    pin.style.top = getCoordsRenderPin(kard.location.y, 'y') + 'px';
     pinImg.src = kard.author.avatar;
     pinImg.alt = kard.offer.title;
     pinImg.title = kard.offer.title;
@@ -99,5 +133,4 @@
     fragment.appendChild(renderCardMap(mapInfo[i], i));
   }
   mapCardList.appendChild(fragment);
-
 })();
