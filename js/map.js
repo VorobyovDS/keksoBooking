@@ -8,16 +8,18 @@
 
   var mapInfo = window.data.getDateInfo(5);
 
+  var WIDTH_PIN = 40; // ширина пина
+  var HEIGHT_PIN = 44; // высота пина
+  var HEIGHT_AFTER_PIN = 18; // высота псевдо элемента
+
+  var All_HEIGHT_PIN = HEIGHT_PIN + HEIGHT_AFTER_PIN;
+
   /*
   * функция в которую передаем значение координаты (указанную в объявлении) и её название x или y
  */
   var getCoordsRenderPin = function (value, xOry) {
     var getPinElement = mapCardTemplate.querySelector('.js-map-card');
     var positionStyleCoords = value;
-
-    var WIDTH_PIN = 40; // ширина пина
-    var HEIGHT_PIN = 44; // высота пина
-    var HEIGHT_AFTER_PIN = 18; // высота псевдо элемента
 
     /*
     * вижу здесь пока несколько вариантов:
@@ -114,10 +116,6 @@
     }
   };
 
-  var buttonMouseupHandler = function () {
-    activatedMapKeks();
-  };
-
   /* клик на метке и показ/скрытие карточки */
   var buttonPinClickHandler = function () {
     var kardsIdAtr = this.getAttribute('data-button-id');
@@ -135,11 +133,83 @@
     this.parentNode.style.display = 'none';
   };
 
-  mapPinDefault.addEventListener('mouseup', buttonMouseupHandler);
-
   var fragment = document.createDocumentFragment();
   for (var i = 0; i < mapInfo.length; i++) {
     fragment.appendChild(renderCardMap(mapInfo[i], i));
   }
   mapCardList.appendChild(fragment);
+
+  /* нужно будет ещё разделить на модули */
+  var mapPinsoverlay = document.querySelector('.js-map__pinsoverlay');
+  var mapPinsoverlayWidth = mapPinsoverlay.offsetWidth;
+  var mapPinsoverlayHeigth = mapPinsoverlay.offsetHeight;
+
+  mapPinDefault.addEventListener('mousedown', function (evt) {
+    evt.preventDefault();
+
+    var startCoords = {
+      x: evt.clientX,
+      y: evt.clientY
+    };
+
+    var dragged = false;
+
+    var mouseUpHandler = function (upEvt) {
+      upEvt.preventDefault();
+
+      document.removeEventListener('mousemove', mouseMoveHandler);
+      document.removeEventListener('mouseup', mouseUpHandler);
+
+      if (!dragged) {
+        activatedMapKeks();
+        return;
+      }
+
+      formElementAddresInput.value = (mapPinDefault.offsetLeft - WIDTH_PIN) + ',' + (mapPinDefault.offsetTop - All_HEIGHT_PIN);
+    };
+
+    var mouseMoveHandler = function (moveEvt) {
+      moveEvt.preventDefault();
+
+      dragged = true;
+
+      var shift = {
+        x: startCoords.x - moveEvt.clientX,
+        y: startCoords.y - moveEvt.clientY
+      };
+
+      startCoords = {
+        x: moveEvt.clientX,
+        y: moveEvt.clientY
+      };
+
+      mapPinDefault.style.top = regularPositionMovePin(mapPinDefault.offsetTop - shift.y, 'top') + 'px';
+      mapPinDefault.style.left = regularPositionMovePin(mapPinDefault.offsetLeft - shift.x, 'left') + 'px';
+    };
+
+    var regularPositionMovePin = function (currentCoords, topOrLeft) {
+
+      var correctCoords = currentCoords;
+
+      if (correctCoords < WIDTH_PIN) {
+        correctCoords = WIDTH_PIN;
+      }
+
+      if (topOrLeft === 'left') {
+        if (correctCoords > mapPinsoverlayWidth - WIDTH_PIN) {
+          correctCoords = mapPinsoverlayWidth - WIDTH_PIN
+        }
+      }
+
+      if (topOrLeft === 'top') {
+        if (correctCoords > mapPinsoverlayHeigth - All_HEIGHT_PIN) {
+          correctCoords = mapPinsoverlayHeigth - All_HEIGHT_PIN
+        }
+      }
+      return correctCoords
+    };
+
+    document.addEventListener('mousemove', mouseMoveHandler);
+    document.addEventListener('mouseup', mouseUpHandler);
+  })
 })();
