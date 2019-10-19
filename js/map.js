@@ -14,7 +14,6 @@
   var getCoordsRenderPin = function (value, xOry) {
     var getPinElement = mapCardTemplate.querySelector('.js-map-card');
     var positionStyleCoords = value;
-    console.log('start' + positionStyleCoords);
 
     var WIDTH_PIN = 40; // ширина пина
     var HEIGHT_PIN = 44; // высота пина
@@ -27,7 +26,6 @@
     * - можно ещё после рендеринга пробегаться по значениям и корректирвоать их, но это уже совсем плохой вариант;
     * выбрал пока самый простой из них
     * */
-    console.log('st' + positionStyleCoords);
 
     if (xOry === 'x') {
       positionStyleCoords = value + (WIDTH_PIN / 2);
@@ -36,8 +34,6 @@
     if (xOry === 'y') {
       positionStyleCoords = value - HEIGHT_PIN - HEIGHT_AFTER_PIN;
     }
-    console.log(getPinElement.offsetWidth);
-    console.log('finish' + positionStyleCoords);
 
     return positionStyleCoords;
   };
@@ -47,6 +43,7 @@
     var template = mapCardTemplate.cloneNode(true);
 
     var mapCard = template.querySelector('.js-map-card');
+    var featuresElements = template.querySelectorAll('.feature');
     var pin = template.querySelector('.js-map__pin');
     var pinImg = template.querySelector('.js-pin_img_btn');
     var photoIList = template.querySelector('.js-popup__pictures');
@@ -74,6 +71,18 @@
       photoLi.firstElementChild.src = kard.offer.photos[i];
 
       photoIList.appendChild(photoLi);
+    }
+
+    for (var j = 0; j < featuresElements.length; j++) {
+      var reg = new RegExp('feature--.*');
+
+      /* получаем классы на элементе, находим нужные, разделяем их и выводим вторую часть */
+      var featuresElementsClassFind = featuresElements[j].classList.value.match(reg).toString().split('--')[1];
+
+      /* если элемента в массиве нет, то скрываем его */
+      if (!kard.offer.features.includes(featuresElementsClassFind)) {
+        featuresElements[j].style.display = 'none';
+      }
     }
 
     pin.addEventListener('click', buttonPinClickHandler);

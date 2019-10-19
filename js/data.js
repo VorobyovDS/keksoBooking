@@ -52,9 +52,14 @@
   * метод для генерации дополнительных опций для дома
   */
   var generateFeatures = function (array) {
-    array.length = window.help.getRandomNumber(1, array.length);
+    var newArray = [];
+    var randomLength =  Math.max(1, Math.floor(Math.random() * array.length));
 
-    return array;
+    for ( var i = 0; i < randomLength; i++) {
+      newArray.push(array[i])
+    }
+
+    return newArray;
   };
 
   /* определение заголовка */
