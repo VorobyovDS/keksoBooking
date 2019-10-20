@@ -1,6 +1,9 @@
 'use strict';
 
 (function () {
+    var HEIGHT_PIN = 44; // высота пина
+    var HEIGHT_AFTER_PIN = 18; // высота псевдо элемента
+
   window.help = {
     /*
     * метод для перемешивания массива
@@ -31,6 +34,14 @@
       var randomTypeNumber = Math.floor(array.length * Math.random());
 
       return array[randomTypeNumber];
+    },
+
+    /*
+    *  Константы
+    */
+    constants: {
+      WIDTH_PIN: 40, // ширина пина
+      All_HEIGHT_PIN: HEIGHT_PIN + HEIGHT_AFTER_PIN
     }
   }
 })();

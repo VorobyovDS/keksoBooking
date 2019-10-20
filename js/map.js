@@ -8,12 +8,6 @@
 
   var mapInfo = window.data.getDateInfo(5);
 
-  var WIDTH_PIN = 40; // ширина пина
-  var HEIGHT_PIN = 44; // высота пина
-  var HEIGHT_AFTER_PIN = 18; // высота псевдо элемента
-
-  var All_HEIGHT_PIN = HEIGHT_PIN + HEIGHT_AFTER_PIN;
-
   /*
   * функция в которую передаем значение координаты (указанную в объявлении) и её название x или y
  */
@@ -30,11 +24,11 @@
     * */
 
     if (xOry === 'x') {
-      positionStyleCoords = value + (WIDTH_PIN / 2);
+      positionStyleCoords = value + (window.help.constants.WIDTH_PIN / 2);
     }
 
     if (xOry === 'y') {
-      positionStyleCoords = value - HEIGHT_PIN - HEIGHT_AFTER_PIN;
+      positionStyleCoords = value - window.help.constants.All_HEIGHT_PIN;
     }
 
     return positionStyleCoords;
@@ -101,21 +95,6 @@
   var formElementAddresInput = noticeForm.querySelector('#address'); // поля ввода адреса
   formElementAddresInput.value = MAP_PIN_DEFAULT_LOCATION.x + ',' + MAP_PIN_DEFAULT_LOCATION.y; // дефолтные координаты
 
-  /* активация активного состояния карты и формы */
-  var activatedMapKeks = function () {
-    mapKeks.classList.remove('map--faded');
-    noticeForm.classList.remove('notice__form--disabled');
-    mapCardList.style.display = "block";
-
-    var mapPins = document.querySelectorAll('.js-map__pin');
-    for (var i = 0; i < formElement.length; i++) {
-      formElement[i].disabled = false;
-    }
-    for (var j = 0; j < mapPins.length; j++) {
-      mapPins[j].style.display = 'block';
-    }
-  };
-
   /* клик на метке и показ/скрытие карточки */
   var buttonPinClickHandler = function () {
     var kardsIdAtr = this.getAttribute('data-button-id');
@@ -139,77 +118,20 @@
   }
   mapCardList.appendChild(fragment);
 
-  /* нужно будет ещё разделить на модули */
-  var mapPinsoverlay = document.querySelector('.js-map__pinsoverlay');
-  var mapPinsoverlayWidth = mapPinsoverlay.offsetWidth;
-  var mapPinsoverlayHeigth = mapPinsoverlay.offsetHeight;
+  window.mapKeksObj = {
+    /* активация активного состояния карты и формы */
+   activatedMapKeks: function () {
+      mapKeks.classList.remove('map--faded');
+      noticeForm.classList.remove('notice__form--disabled');
+      mapCardList.style.display = "block";
 
-  mapPinDefault.addEventListener('mousedown', function (evt) {
-    evt.preventDefault();
-
-    var startCoords = {
-      x: evt.clientX,
-      y: evt.clientY
-    };
-
-    var dragged = false;
-
-    var mouseUpHandler = function (upEvt) {
-      upEvt.preventDefault();
-
-      document.removeEventListener('mousemove', mouseMoveHandler);
-      document.removeEventListener('mouseup', mouseUpHandler);
-
-      if (!dragged) {
-        activatedMapKeks();
-        return;
+      var mapPins = document.querySelectorAll('.js-map__pin');
+      for (var i = 0; i < formElement.length; i++) {
+        formElement[i].disabled = false;
       }
-
-      formElementAddresInput.value = (mapPinDefault.offsetLeft - WIDTH_PIN) + ',' + (mapPinDefault.offsetTop - All_HEIGHT_PIN);
-    };
-
-    var mouseMoveHandler = function (moveEvt) {
-      moveEvt.preventDefault();
-
-      dragged = true;
-
-      var shift = {
-        x: startCoords.x - moveEvt.clientX,
-        y: startCoords.y - moveEvt.clientY
-      };
-
-      startCoords = {
-        x: moveEvt.clientX,
-        y: moveEvt.clientY
-      };
-
-      mapPinDefault.style.top = regularPositionMovePin(mapPinDefault.offsetTop - shift.y, 'top') + 'px';
-      mapPinDefault.style.left = regularPositionMovePin(mapPinDefault.offsetLeft - shift.x, 'left') + 'px';
-    };
-
-    var regularPositionMovePin = function (currentCoords, topOrLeft) {
-
-      var correctCoords = currentCoords;
-
-      if (correctCoords < WIDTH_PIN) {
-        correctCoords = WIDTH_PIN;
+      for (var j = 0; j < mapPins.length; j++) {
+        mapPins[j].style.display = 'block';
       }
-
-      if (topOrLeft === 'left') {
-        if (correctCoords > mapPinsoverlayWidth - WIDTH_PIN) {
-          correctCoords = mapPinsoverlayWidth - WIDTH_PIN
-        }
-      }
-
-      if (topOrLeft === 'top') {
-        if (correctCoords > mapPinsoverlayHeigth - All_HEIGHT_PIN) {
-          correctCoords = mapPinsoverlayHeigth - All_HEIGHT_PIN
-        }
-      }
-      return correctCoords
-    };
-
-    document.addEventListener('mousemove', mouseMoveHandler);
-    document.addEventListener('mouseup', mouseUpHandler);
-  })
+    }
+  }
 })();
