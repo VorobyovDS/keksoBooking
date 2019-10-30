@@ -4,6 +4,19 @@
     var HEIGHT_PIN = 44; // высота пина
     var HEIGHT_AFTER_PIN = 18; // высота псевдо элемента
 
+  var removePopup = function() {
+     this.remove();
+  };
+
+  var openPopup = function(popup) {
+    popup.classList.add('__visible');
+
+    setTimeout(function () {
+      popup.addEventListener('transitionend', removePopup);
+      popup.classList.remove('__visible');
+    }, 10000)
+  };
+
   window.help = {
     /*
     * метод для перемешивания массива
@@ -42,6 +55,33 @@
     constants: {
       WIDTH_PIN: 40, // ширина пина
       All_HEIGHT_PIN: HEIGHT_PIN + HEIGHT_AFTER_PIN
+    },
+
+    /* простой попап для различных всплывающих окон */
+    popup: function (msg, theme) {
+      var popupWindow = document.createElement('div');
+      popupWindow.classList.add('help_popup');
+      switch (theme) {
+        case 'error': {
+          popupWindow.classList.add('__danger');
+          break;
+        }
+        case 'success': {
+          popupWindow.classList.add('__success');
+          break;
+        }
+        default: {
+          popupWindow.classList.add('__default');
+          break;
+        }
+      }
+      popupWindow.textContent = msg;
+      document.body.insertAdjacentElement('afterbegin', popupWindow);
+
+
+      setTimeout(function () {
+        openPopup(popupWindow);
+      }, 500);
     }
   }
 })();

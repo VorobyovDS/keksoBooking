@@ -6,7 +6,32 @@
 
   var MAP_PIN_DEFAULT_LOCATION = {x: 385, y: 375}; // дефолтные значения метки
 
-  var mapInfo = window.data.getDateInfo(5);
+  /* определение заголовка */
+  var getTypeTitile = function (currentType) {
+    var typeTitle = '';
+    switch (currentType) {
+      case('palace'): {
+        typeTitle = 'Дворец';
+        break;
+      }
+      case('flat'): {
+        typeTitle = 'Квартира';
+        break;
+      }
+      case('house'): {
+        typeTitle = 'Дом';
+        break;
+      }
+      case ('bungalo'): {
+        typeTitle = 'Бунгало';
+        break;
+      }
+      default:
+        typeTitle = 'Нет информации';
+        break;
+    }
+    return typeTitle;
+  };
 
   /*
   * функция в которую передаем значение координаты (указанную в объявлении) и её название x или y
@@ -52,7 +77,7 @@
     template.querySelector('.js-popup__title').textContent = kard.offer.title;
     template.querySelector('.js-popup__text--address').textContent = kard.offer.address;
     template.querySelector('.js-popup__text--price').textContent = kard.offer.price;
-    template.querySelector('.js-popup__type').textContent = kard.offer.type;
+    template.querySelector('.js-popup__type').textContent = getTypeTitile(kard.offer.type);
     template.querySelector('.js-popup__text--capacity').textContent = kard.offer.rooms + ' комнаты для ' + kard.offer.guests + ' гостей';
     template.querySelector('.js-popup__text--time').textContent = 'заезд после ' + kard.offer.checkin + ' , выезд до ' + kard.offer.checkout;
     template.querySelector('.js-popup__description').textContent = kard.offer.title + ' ' + kard.offer.description;
@@ -87,6 +112,14 @@
     return template;
   };
 
+  var startRenderCards = function (data) {
+    var fragment = document.createDocumentFragment();
+    for (var k = 0; k < data.length; k++) {
+      fragment.appendChild(renderCardMap(data[k], k));
+    }
+    mapCardList.appendChild(fragment);
+  };
+
   var mapKeks = document.querySelector('.js-map'); // карта
   var mapPinDefault = document.querySelector('.js-map__pin--main'); // default метка
   var mapKards = document.querySelectorAll('.js-map-card'); // карточки
@@ -112,11 +145,15 @@
     this.parentNode.style.display = 'none';
   };
 
-  var fragment = document.createDocumentFragment();
-  for (var i = 0; i < mapInfo.length; i++) {
-    fragment.appendChild(renderCardMap(mapInfo[i], i));
-  }
-  mapCardList.appendChild(fragment);
+  var onFormSuccess = function (data, theme) {
+    noticeForm.reset();
+    window.help.popup('Успешная отправка', theme);
+  };
+
+  var onFormError = function (data, theme) {
+    console.log(data);
+    window.help.popup('Форма не отправлена', theme);
+  };
 
   window.mapKeksObj = {
     /* активация активного состояния карты и формы */
@@ -132,6 +169,13 @@
       for (var j = 0; j < mapPins.length; j++) {
         mapPins[j].style.display = 'block';
       }
+
+     backend.load(startRenderCards, window.help.popup);
+
+     noticeForm.addEventListener('submit', function (evt) {
+       window.backend.save(new FormData(noticeForm), onFormSuccess, onFormError);
+       evt.preventDefault();
+     })
     }
   }
 })();

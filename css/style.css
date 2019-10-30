@@ -709,3 +709,47 @@ textarea:focus {
 .footer-social-item-vk {
   background-position: -10px -10px;
 }
+
+.help_popup {
+  position: fixed;
+  font-size: 20px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+  border-radius: 10px;
+  z-index: 10;
+  padding: 60px;
+  font-weight: bold;
+  color: #fff;
+  background-size: 400%;
+  animation: help_animation 4s linear infinite;
+  box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: opacity 0.8s linear;
+}
+
+.help_popup.__danger {
+  background: linear-gradient(90deg, rgb(215, 92, 89) 0%, rgb(114, 12, 0) 25%, rgba(0, 0, 0, 0.81) 40%, rgba(255, 255, 255, 0.57) 60%, rgb(215, 92, 89) 75%, rgb(114, 12, 0) 100%);
+  background-size: 400%;
+  box-shadow: 1px 1px 25px 12px rgba(171, 14, 14, 0.5);
+}
+
+.help_popup.__success {
+  background: linear-gradient(90deg, rgba(0, 237, 50, 0.92) 0%, rgb(112, 181, 19) 25%, rgba(99, 94, 255, 0.81) 40%, rgba(114, 35, 34, 0.57) 60%, rgba(0, 237, 50, 0.92) 75%, rgb(112, 181, 19) 100%);
+  background-size: 400%;
+  box-shadow: 1px 1px 25px 12px rgba(0, 237, 50, 0.3);
+}
+
+.help_popup.__visible {
+  opacity: 1;
+  transition: opacity 0.8s linear;
+}
+
+@keyframes help_animation {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 100% 0;
+  }
+}
