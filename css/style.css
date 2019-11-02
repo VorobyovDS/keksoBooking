@@ -726,6 +726,7 @@ textarea:focus {
   box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.5);
   opacity: 0;
   transition: opacity 0.8s linear;
+  text-align: center;
 }
 
 .help_popup.__danger {

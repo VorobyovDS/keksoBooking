@@ -10,15 +10,15 @@
   var getTypeTitile = function (currentType) {
     var typeTitle = '';
     switch (currentType) {
-      case('palace'): {
+      case ('palace'): {
         typeTitle = 'Дворец';
         break;
       }
-      case('flat'): {
+      case ('flat'): {
         typeTitle = 'Квартира';
         break;
       }
-      case('house'): {
+      case ('house'): {
         typeTitle = 'Дом';
         break;
       }
@@ -155,6 +155,19 @@
     window.help.popup('Форма не отправлена', theme);
   };
 
+  /* таблица соответвия типа жилья и минимального значения цены за ночь */
+  var mapTypeIsMinPrice = {
+    "palace": 10000,
+    "flat": 1000,
+    "house": 5000,
+    "bungalo": 0
+  };
+
+  var inputPrice = document.getElementById('price');
+  var inputType = document.getElementById('type');
+  var inputCapacity = document.getElementById('capacity');
+  var inputRoomNumber = document.getElementById('room_number');
+
   window.mapKeksObj = {
     /* активация активного состояния карты и формы */
    activatedMapKeks: function () {
@@ -172,9 +185,67 @@
 
      backend.load(startRenderCards, window.help.popup);
 
+     inputPrice.setAttribute('min', mapTypeIsMinPrice[inputType.value]);
+     inputPrice.placeholder = mapTypeIsMinPrice[inputType.value];
+
+     inputType.addEventListener('input', function () {
+       inputPrice.setAttribute('min', mapTypeIsMinPrice[inputType.value]);
+       inputPrice.placeholder = mapTypeIsMinPrice[inputType.value];
+     });
+
+     /* TODO: валидацию формы нужно доработать */
+     var checkNumberRoom = function (room_number, capacity) {
+       var formError = false;
+
+       switch (room_number.value) {
+         case '1': {
+           if (capacity.value !== '1') {
+             window.help.popup('Доступно «для 1 гостя», поле было изменено! Проверьте форму и отправьте повторно!', 'error');
+             capacity.value = 1;
+             capacity.style.background = 'rgba(95,222,103,0.87)';
+             formError = true;
+           }
+           break;
+         }
+         case '2': {
+           if (capacity.value < 3 && capacity.value !== 0) {
+             window.help.popup('Доступно «для 2 гостей» или «для 1 гостя», поле было изменено! Проверьте форму и отправьте повторно!', 'error');
+             capacity.value = 2;
+             capacity.style.background = 'rgba(95,222,103,0.87)';
+             formError = true;
+           }
+           break;
+         }
+         case '3': {
+           if (capacity.value < 4 && capacity.value !==0) {
+             window.help.popup('Доступно «для 3 гостей», «для 2 гостей» или «для 1 гостя», поле было изменено, Проверьте форму и отправьте повторно!', 'error');
+             capacity.value = 2;
+             capacity.style.background = 'rgba(95,222,103,0.87)';
+             formError = true;
+           }
+           break;
+         }
+         case '100': {
+           if (capacity.value !== 0) {
+             window.help.popup('Доступно «не для гостей», поле было изменено, Проверьте форму и отправьте повторно!', 'error');
+             capacity.value = 2;
+             capacity.style.background = 'rgba(95,222,103,0.87)';
+             formError = true;
+           }
+           break;
+         }
+       }
+
+       return formError;
+     };
+
      noticeForm.addEventListener('submit', function (evt) {
-       window.backend.save(new FormData(noticeForm), onFormSuccess, onFormError);
        evt.preventDefault();
+       if (checkNumberRoom(inputRoomNumber, inputCapacity)) {
+         return false;
+       } else {
+         window.backend.save(new FormData(noticeForm), onFormSuccess, onFormError);
+       }
      })
     }
   }
