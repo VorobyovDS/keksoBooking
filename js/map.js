@@ -3,6 +3,7 @@
 (function () {
   var mapCardTemplate = document.querySelector('#map_card_template').content;
   var mapCardList = document.querySelector('.map__pins');
+  var pinsAndCrads = {};
 
   var MAP_PIN_DEFAULT_LOCATION = {x: 385, y: 375}; // дефолтные значения метки
 
@@ -112,13 +113,75 @@
     return template;
   };
 
+  var housingType = document.querySelector('#housing-type');
+  var housingPrice = document.querySelector('#housing-price');
+  var housingRooms = document.querySelector('#housing-rooms');
+  var housingGuests = document.querySelector('#housing-guests');
+
+  /* for clear Pin map block */
+  var clearPinMap = function () {
+    var mapCurrentButton = mapCardList.querySelectorAll('button');
+    var mapCurrentArticle = mapCardList.querySelectorAll('article');
+    for (var i = 0; i < mapCurrentArticle.length; i++) {
+      mapCurrentArticle[i].remove();
+    }
+    for (var j = 0; j <  mapCurrentButton.length; j++) {
+      mapCurrentButton[j].remove();
+    }
+  };
+
+  var filterPrice = function (selected, value) {
+    var isCorrectValue = false;
+    switch (selected) {
+      case 'middle': {
+        isCorrectValue = 10000 < value && value < 50000;
+        break;
+      }
+      case 'low': {
+        isCorrectValue = value <= 10000;
+        break;
+      }
+      case 'high': {
+        isCorrectValue = value >= 50000;
+        break;
+      }
+      case 'any': {
+        isCorrectValue = true;
+        break
+      }
+    }
+    return isCorrectValue;
+  };
+
+  var filterMap = function () {
+    var rerenderMap = pinsAndCrads.slice().filter(function (item) {
+      var type = housingType.value !== 'any' ? housingType.value === item.offer.type : true;
+      var price = filterPrice(housingPrice.value, item.offer.price);
+      var rooms = housingRooms.value !== 'any' ? housingRooms.value == item.offer.rooms : true;
+      var guests = housingGuests.value !== 'any' ? housingGuests.value == item.offer.guests : true;
+      return type && price && rooms && guests;
+    });
+    clearPinMap();
+    var fragment = document.createDocumentFragment();
+    for (var k = 0; k < rerenderMap.length; k++) {
+      fragment.appendChild(renderCardMap(rerenderMap[k], k));
+    }
+    mapCardList.appendChild(fragment);
+  };
+
   var startRenderCards = function (data) {
+    pinsAndCrads = data.slice();
     var fragment = document.createDocumentFragment();
     for (var k = 0; k < data.length; k++) {
       fragment.appendChild(renderCardMap(data[k], k));
     }
     mapCardList.appendChild(fragment);
   };
+
+  housingType.addEventListener('change', filterMap);
+  housingPrice.addEventListener('change', filterMap);
+  housingRooms.addEventListener('change', filterMap);
+  housingGuests.addEventListener('change', filterMap);
 
   var mapKeks = document.querySelector('.js-map'); // карта
   var mapPinDefault = document.querySelector('.js-map__pin--main'); // default метка
